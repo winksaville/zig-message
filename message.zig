@@ -17,7 +17,7 @@ const Queue = std.atomic.Queue;
 /// external representation.
 fn Message(comptime BodyType: type) type {
     return packed struct {
-        const Self = this;
+        const Self = @This();
 
         pub header: MessageHeader,
         pub body: BodyType,
@@ -35,7 +35,7 @@ fn Message(comptime BodyType: type) type {
 /// all Messages and is the type that is used
 /// to place a message on a Queue.
 const MessageHeader = packed struct {
-    const Self = this;
+    const Self = @This();
 
     pub message_offset: usize,
     pub cmd: u64,
@@ -54,7 +54,7 @@ const MessageHeader = packed struct {
 };
 
 const MyMsgBody = packed struct {
-    const Self = this;
+    const Self = @This();
     data: [3]u8,
 
     fn init(self: *Self) void {
@@ -84,6 +84,7 @@ test "Message" {
     var node_0 = MyQueue.Node {
         .data = &myMsg.header,
         .next = undefined,
+        .prev = undefined,
     };
 
     // Add and remove it from the queue
